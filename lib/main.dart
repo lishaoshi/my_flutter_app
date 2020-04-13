@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_provider/provider/countProvider.dart';
-import 'package:flutter_provider/pages/myHomePages.dart';
+import 'package:flutter_provider/pages/splash_page.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_provider/configs/router_config.dart';
 
 void main(){
   Provider.debugCheckInvalidValueType = null;
@@ -22,7 +23,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      // home: SplashPage(),
+      initialRoute: RoutersName.splash,
+      onGenerateRoute: Routers.generatorRoute,
       debugShowCheckedModeBanner: false,
     );
   }

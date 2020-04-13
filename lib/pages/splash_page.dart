@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_provider/configs/resous_manege.dart';
+import 'package:flutter_provider/configs/router_config.dart';
 
 //十六进制的倒计时数字
 int maxCount = 0x3;
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+class SplashPage extends StatefulWidget {
+  SplashPage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _MyHomePageState extends State<SplashPage> with TickerProviderStateMixin {
   Animation _animation;
   AnimationController _flutterLogo;
   AnimationController _bottomAnimated;
@@ -38,6 +39,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     // TODO: implement initState
     super.initState();
+    
+
+  }
+
+  @override
+  void dispose() {
+    _flutterLogo.dispose();
+    _bottomAnimated.dispose();
+    // TODO: implement dispose
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -122,20 +133,25 @@ class RightNum extends AnimatedWidget {
   final Animation<int> animation;
   @override
   Widget build(BuildContext context) {
-    
-    var value = animation.value;
-    return Container(
-     padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-     decoration: BoxDecoration(
-      color: Colors.black26,
-      borderRadius: BorderRadius.all(Radius.circular(16.0))
-     ),
-      child: Text(
-      '${value}秒 | 跳过',
-      style: TextStyle(
-        color: Colors.white
-      )
-    ),
+    var value = animation.value + 1;
+    return InkWell(
+      onTap: () {
+        // print(123);
+        RouterNavigator.pushReplaceName(context, RoutersName.home, '');
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.black26,
+          borderRadius: BorderRadius.all(Radius.circular(16.0))
+        ),
+          child: Text(
+          '${value}秒 | 跳过',
+          style: TextStyle(
+            color: Colors.white
+          )
+        ),
+      ),
     );
   }
 }
