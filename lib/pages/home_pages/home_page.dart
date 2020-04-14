@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_provider/pages/home_pages/sampleListItem.dart';
+import 'package:flutter_provider/api/home.dart';
+import 'package:flutter_provider/provider/home_provider.dart';
+import 'package:provider/provider.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -52,7 +55,7 @@ class _HomePageState extends State<HomePage> {
                 await Future.delayed(Duration(seconds: 2), () {
                   if (mounted) {
                     setState(() {
-                      _count = 20;
+                      _count = 6;
                     });
                   }
                 });
@@ -79,7 +82,9 @@ class _HomePageState extends State<HomePage> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      return SampleListItem();
+                      return SkeletonList(
+                        // builder: (context, index) => ArticleSkeletonItem(),
+                      );
                     },
                     childCount: _count,
                   ),
