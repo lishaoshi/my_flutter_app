@@ -34,7 +34,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     super.initState();
     _linkNotifier = LinkHeaderNotifier();
     _secondFloorOpen = ValueNotifier<bool>(false);
-    Provider.of<ToTopScroll>(context,listen: false).initPage();
+              print('parent init');
+
   }
 
    @override
@@ -48,101 +49,104 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return 
-    FutureBuilder(
-      future: Provider.of<HomeProvider>(context).initData(),
-      builder: (ctx, snapt) {
-        return Consumer2<HomeProvider, ToTopScroll>(builder: (_, homeProvider, topProvider, child){
-          print('start build');
-            return Scaffold(
-              body: Column(
-                children: <Widget>[
-                  SecondFloorWidget(_linkNotifier, _secondFloorOpen),
-                  Expanded(
-                    child: EasyRefresh.custom(
-                      scrollController: topProvider.controller,
-                      // enableControlFinishLoad: 
-                      header: LinkHeader(
-                        _linkNotifier,
-                        extent: 70.0,
-                        triggerDistance: 70.0,
-                        completeDuration: Duration(milliseconds: 500),
-                      ),
-                      onRefresh: () async {
-                        if (_secondFloorOpen.value) return;
-                        homeProvider.initData();
-                      },
-                      onLoad: () async {
-                        print('123');
-                        // await Future.delayed(Duration(seconds: 2), () {
-                        //   if (mounted) {
-                        //     setState(() {
-                        //       _count = 6;
-                        //     });
-                        //   }
-                        // });
-                      },
-                      slivers: <Widget>[
-                        SliverAppBar(
-                          expandedHeight: 180.0,
-                          pinned: true,
-                          // backgroundColor: Colors.red,
-                          flexibleSpace: FlexibleSpaceBar(
-                            centerTitle: true,
-                            title: EmptyAnimatedSwitcher(
-                              display: topProvider.showAppBar,
-                              child: Text("客官，楼上请"),
-                            ),
-                            background: BannerWidget(),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Container(
-                            height: 40,
-                            child: Center(
-                              child: Text('123 >>> ${homeProvider.topArticle}')
-                            )
-                          ),
-                        ),
-                        // else
-                          homeProvider.topArticle.isEmpty? SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return SkeletonList();
-                              },
-                              childCount: 1,
-                            ),
-                          ):SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return ArticleItem(
-                                  top: true,
-                                  item: homeProvider.topArticle[index]
-                                );
-                              },
-                              childCount: homeProvider.topArticle.length,
-                            ),
-                          ),
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return ArticleItem(
-                                  item: homeProvider.article[index]
-                                );
-                              },
-                              childCount: homeProvider.article?.length ?? 0,
-                            ),
-                          ),
-                      ],
+          print('parent build');
+    return ProviderWidget2(
+      model1: HomeProvider(),
+      model2: ToTopScroll(),
+      builder: (_, homeProvider, topProvider, child) {
+        print('123456789');
+       return Scaffold(
+            body: 
+              Column(
+              children: <Widget>[
+                SecondFloorWidget(_linkNotifier, _secondFloorOpen),
+                Expanded(
+                  child: EasyRefresh.custom(
+                    scrollController: topProvider.controller,
+                    // enableControlFinishLoad: 
+                    header: LinkHeader(
+                      _linkNotifier,
+                      extent: 70.0,
+                      triggerDistance: 70.0,
+                      completeDuration: Duration(milliseconds: 500),
                     ),
+                    onRefresh: () async {
+                      if (_secondFloorOpen.value) return;
+                      homeProvider.initData();
+                    },
+                    onLoad: () async {
+                      await Future.delayed(Duration(seconds: 2), () {
+                        if (mounted) {
+                          homeProvider.loadMore();
+                        }
+                      });
+                    },
+                    slivers: <Widget>[
+                      SliverAppBar(
+                        expandedHeight: 180.0,
+                        pinned: true,
+                        // backgroundColor: Colors.red,
+                        flexibleSpace: FlexibleSpaceBar(
+                          centerTitle: true,
+                          title: EmptyAnimatedSwitcher(
+                            display: topProvider.showAppBar,
+                            child: Text("客官，楼上请"),
+                          ),
+                          background: BannerWidget(),
+                        ),
+                      ),
+                      // SliverToBoxAdapter(
+                      //   child: Container(
+                      //     height: 40,
+                      //     child: Center(
+                      //       child: Text('123 >>> ${homeProvider.topArticle}')
+                      //     )
+                      //   ),
+                      // ),
+                      // else
+                        homeProvider.topArticle.isEmpty? SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return SkeletonList();
+                            },
+                            childCount: 1,
+                          ),
+                        ):SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return ArticleItem(
+                                top: true,
+                                item: homeProvider.topArticle[index]
+                              );
+                            },
+                            childCount: homeProvider.topArticle.length,
+                          ),
+                        ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return ArticleItem(
+                                item: homeProvider.list[index]
+                              );
+                            },
+                            childCount: homeProvider.list?.length ?? 0,
+                          ),
+                        ),
+                    ],
                   ),
-                ],
-              )
-            );
-        });
-      }
+                ),
+              ],
+            )
+      );
+      },
+      onModelReady: (model1, model2) {
+        model1.initData();
+        model2.initPage();
+      },
     );
-  }
+        
+            
+      }
 }
 
 //appbar 文字小到大 《==》大到小
@@ -373,3 +377,91 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
     );
   }
 }
+
+
+
+// return Consumer2<HomeProvider, ToTopScroll>(builder: (_, homeProvider, topProvider, child){
+//       return Scaffold(
+//             body: 
+//               Column(
+//               children: <Widget>[
+//                 SecondFloorWidget(_linkNotifier, _secondFloorOpen),
+//                 Expanded(
+//                   child: EasyRefresh.custom(
+//                     scrollController: topProvider.controller,
+//                     // enableControlFinishLoad: 
+//                     header: LinkHeader(
+//                       _linkNotifier,
+//                       extent: 70.0,
+//                       triggerDistance: 70.0,
+//                       completeDuration: Duration(milliseconds: 500),
+//                     ),
+//                     onRefresh: () async {
+//                       if (_secondFloorOpen.value) return;
+//                       homeProvider.initData();
+//                     },
+//                     onLoad: () async {
+//                       await Future.delayed(Duration(seconds: 2), () {
+//                         if (mounted) {
+//                           homeProvider.loadMore();
+//                         }
+//                       });
+//                     },
+//                     slivers: <Widget>[
+//                       SliverAppBar(
+//                         expandedHeight: 180.0,
+//                         pinned: true,
+//                         // backgroundColor: Colors.red,
+//                         flexibleSpace: FlexibleSpaceBar(
+//                           centerTitle: true,
+//                           title: EmptyAnimatedSwitcher(
+//                             display: topProvider.showAppBar,
+//                             child: Text("客官，楼上请"),
+//                           ),
+//                           background: BannerWidget(),
+//                         ),
+//                       ),
+//                       // SliverToBoxAdapter(
+//                       //   child: Container(
+//                       //     height: 40,
+//                       //     child: Center(
+//                       //       child: Text('123 >>> ${homeProvider.topArticle}')
+//                       //     )
+//                       //   ),
+//                       // ),
+//                       // else
+//                         homeProvider.topArticle.isEmpty? SliverList(
+//                           delegate: SliverChildBuilderDelegate(
+//                             (context, index) {
+//                               return SkeletonList();
+//                             },
+//                             childCount: 1,
+//                           ),
+//                         ):SliverList(
+//                           delegate: SliverChildBuilderDelegate(
+//                             (context, index) {
+//                               return ArticleItem(
+//                                 top: true,
+//                                 item: homeProvider.topArticle[index]
+//                               );
+//                             },
+//                             childCount: homeProvider.topArticle.length,
+//                           ),
+//                         ),
+//                         SliverList(
+//                           delegate: SliverChildBuilderDelegate(
+//                             (context, index) {
+//                               return ArticleItem(
+//                                 item: homeProvider.list[index]
+//                               );
+//                             },
+//                             childCount: homeProvider.list?.length ?? 0,
+//                           ),
+//                         ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             )
+//       );
+//     });

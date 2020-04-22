@@ -88,6 +88,8 @@ class _ProviderWidgetState2<A extends ChangeNotifier, B extends ChangeNotifier>
     model1 = widget.model1;
     model2 = widget.model2;
     widget.onModelReady?.call(model1, model2);
+                  print('child init');
+
     super.initState();
   }
   
@@ -96,8 +98,8 @@ class _ProviderWidgetState2<A extends ChangeNotifier, B extends ChangeNotifier>
     print('builddd child');
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider<A>.value(value: model1),
-          ChangeNotifierProvider<B>.value(value:model2)
+          ChangeNotifierProvider<A>(create:(_)=> model1),
+          ChangeNotifierProvider<B>(create:(_)=> model2),
         ],
         child: Consumer2<A, B>(
           builder: widget.builder,

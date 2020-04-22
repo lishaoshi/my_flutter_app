@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_provider/model/homeModel/banner.dart';
 import 'package:flutter_provider/api/home.dart';
@@ -27,6 +29,7 @@ class HomeProvider extends ViewStateList {
     @override
     Future loadData({isFirst: false, limit: 15}) async{
       // setCurrentPage = 0;
+      // print(page);
       List<Future> futrueList = [];
       setLimit = limit;
       if(isFirst) {
@@ -36,11 +39,21 @@ class HomeProvider extends ViewStateList {
       futrueList.add(HomeApi.fetchArticles(page));
       var data = await Future.wait(futrueList);
       if(isFirst) {
+         _banners = (data[0]);
         _topArticle = data[1];
-        _article = data[2];
+        // list = data[2];
+        return data[2];
+      } else {
+       return data[0];
       }
-      _banners = (data[0]);
+     
       // setCurrentPage = page+1;
     }
+
+    //上拉加载
+    // Future loadMore() async{
+    //   setCurrentPage = page+1;
+    //   loadData();
+    // }
 
 }

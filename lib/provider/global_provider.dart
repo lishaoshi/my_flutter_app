@@ -11,8 +11,8 @@ List<SingleChildWidget> platformProvider = [
 ];
 
 List<SingleChildWidget> providers = [
-  ChangeNotifierProvider(create: (context)=>HomeProvider(),),
-  ChangeNotifierProvider(create: (context)=>ToTopScroll(),),
+  // ChangeNotifierProvider(create: (context)=>HomeProvider(),),
+  // ChangeNotifierProvider(create: (context)=>ToTopScroll(),),
   ...platformProvider,
 ];
 

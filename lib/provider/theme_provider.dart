@@ -17,7 +17,7 @@ class ThemeModel with ChangeNotifier {
       _userDarkMode = false;
 
       /// 获取主题色
-      _themeColor = Colors.primaries[5];
+      _themeColor = Colors.primaries[4];
 
       /// 获取字体
       _fontIndex = 0;

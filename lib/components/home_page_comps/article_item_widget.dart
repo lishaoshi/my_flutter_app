@@ -23,9 +23,8 @@ class ArticleItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var backgroundColor = Theme.of(context).scaffoldBackgroundColor;
-    print(item.author);
     return Material(
-      color: top?Theme.of(context).accentColor.withAlpha(10):backgroundColor,
+      color: top?Theme.of(context).accentColor.withAlpha(40):backgroundColor,
       child: InkWell(
         onTap:() {
           print('tap');
@@ -76,13 +75,13 @@ class ArticleItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        // ArticleTitleWidget(item.title),
-                        // SizedBox(
-                        //   height: 2,
-                        // ),
+                        ArticleTitleWidget(item.title),
+                        SizedBox(
+                          height: 2,
+                        ),
                         Text(
-                          "456789",
-                          // style: Theme.of(context).textTheme.caption,
+                           item.desc,
+                          style: Theme.of(context).textTheme.caption,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
