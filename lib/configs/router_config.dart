@@ -5,7 +5,7 @@ import 'package:flutter_provider/pages/home_pages/home_page.dart';
 //一些pages
 import 'package:flutter_provider/pages/home_pages/index.dart';
 import 'package:flutter_provider/pages/splash_page.dart';
-import 'package:flutter_provider/router_page_build.dart/index.dart';
+import 'package:flutter_provider/router_page_build/index.dart';
 
 
 
@@ -23,7 +23,7 @@ class Routers {
       case RoutersName.splash:
         return NoAnimRouteBuilder(SplashPage());
       case RoutersName.home:
-        return NoAnimRouteBuilder(HomePage());
+        return NoAnimRouteBuilder(TabNavigator());
     }
   }
 

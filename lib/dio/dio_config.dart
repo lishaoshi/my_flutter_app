@@ -23,7 +23,6 @@ class ApiInterceptor extends InterceptorsWrapper {
   onRequest(RequestOptions options) async {
     debugPrint('---api-request--->url--> ${options.baseUrl}${options.path}' +
         ' queryParameters: ${options.queryParameters}');
-//    debugPrint('---api-request--->data--->${options.data}');
     return options;
   }
 

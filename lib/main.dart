@@ -4,6 +4,8 @@ import 'package:flutter_provider/provider/countProvider.dart';
 import 'package:flutter_provider/pages/splash_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_provider/configs/router_config.dart';
+import 'package:flutter_provider/provider/global_provider.dart';
+import 'package:flutter_provider/provider/theme_provider.dart';
 
 void main(){
   Provider.debugCheckInvalidValueType = null;
@@ -18,15 +20,20 @@ void main(){
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      // home: SplashPage(),
-      initialRoute: RoutersName.splash,
-      onGenerateRoute: Routers.generatorRoute,
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: providers,
+      child: Consumer<ThemeModel>(
+        builder: (_, themeProvider, child) {
+          return MaterialApp(
+              title: 'Flutter Demo',
+              theme: themeProvider.themeData(),
+              darkTheme: themeProvider.themeData(platformDarkModel: true),
+              initialRoute: RoutersName.splash,
+              onGenerateRoute: Routers.generatorRoute,
+              debugShowCheckedModeBanner: false,
+            );
+        },
+      )
     );
   }
 }

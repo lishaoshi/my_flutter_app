@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_provider/pages/home_pages/home_page.dart';
+import 'package:flutter_provider/pages/home_pages/my_page.dart';
+import 'package:flutter_provider/pages/home_pages/tixi_page.dart';
+
+import 'package:flutter_provider/pages/home_pages/product_page.dart';
+
+import 'package:flutter_provider/pages/home_pages/wecharts_page.dart';
+
 
 
 class TabNavigator extends StatefulWidget {
@@ -13,6 +20,13 @@ class TabNavigator extends StatefulWidget {
 class _TabNavigatorState extends State<TabNavigator> {
   int _selectedIndex = 0;
   PageController _pageController;
+  List<Widget> pageList = [
+    HomePage(),
+    ProductPage(),
+    WechartsPage(),
+    TixiPage(),
+    MyPage()
+  ];
   @override
   void initState() {
     _pageController = PageController(initialPage: 0);
@@ -26,10 +40,14 @@ class _TabNavigatorState extends State<TabNavigator> {
       // appBar: AppBar(),
       body:PageView.builder(
         itemBuilder: (context, index){
-          return HomePage();
+          return pageList[index];
         },
-        itemCount: 5,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: pageList.length,
         controller: _pageController,
+        onPageChanged: (index) {
+          _selectedIndex = index;
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -57,6 +75,11 @@ class _TabNavigatorState extends State<TabNavigator> {
         ],
         currentIndex: _selectedIndex,
         onTap: (index) {
+          setState(() {
+            print(index);
+            _selectedIndex = index;
+            _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.easeInCirc);
+          });
         },
       ),
     );
