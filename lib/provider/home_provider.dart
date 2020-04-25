@@ -28,8 +28,6 @@ class HomeProvider extends ViewStateList {
 
     @override
     Future loadData({isFirst: false, limit: 15}) async{
-      // setCurrentPage = 0;
-      // print(page);
       List<Future> futrueList = [];
       setLimit = limit;
       if(isFirst) {
@@ -38,16 +36,14 @@ class HomeProvider extends ViewStateList {
       }
       futrueList.add(HomeApi.fetchArticles(page));
       var data = await Future.wait(futrueList);
+      debugPrint('data >>> $data');
       if(isFirst) {
          _banners = (data[0]);
         _topArticle = data[1];
-        // list = data[2];
         return data[2];
       } else {
        return data[0];
       }
-     
-      // setCurrentPage = page+1;
     }
 
     //上拉加载

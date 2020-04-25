@@ -63,6 +63,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                 Expanded(
                   child: EasyRefresh.custom(
                     scrollController: topProvider.controller,
+                    taskIndependence : true,
                     // enableControlFinishLoad: 
                     header: LinkHeader(
                       _linkNotifier,
@@ -74,13 +75,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                       if (_secondFloorOpen.value) return;
                       homeProvider.initData();
                     },
-                    onLoad: () async {
-                      await Future.delayed(Duration(seconds: 2), () {
-                        if (mounted) {
-                          homeProvider.loadMore();
-                        }
-                      });
-                    },
+                    onLoad:homeProvider.loadMore,
                     slivers: <Widget>[
                       SliverAppBar(
                         expandedHeight: 180.0,
@@ -95,15 +90,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                           background: BannerWidget(),
                         ),
                       ),
-                      // SliverToBoxAdapter(
-                      //   child: Container(
-                      //     height: 40,
-                      //     child: Center(
-                      //       child: Text('123 >>> ${homeProvider.topArticle}')
-                      //     )
-                      //   ),
-                      // ),
-                      // else
                         homeProvider.topArticle.isEmpty? SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {

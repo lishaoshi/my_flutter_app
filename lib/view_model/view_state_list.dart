@@ -1,10 +1,12 @@
 //页面需要上拉加载、下拉刷新的公共model
 
 
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_provider/provider/view_state_model.dart';
+import './view_state_model.dart';
 
-abstract class ViewStateList<T> with ChangeNotifier {
-  static 
+abstract class ViewStateList<T> extends ViewStateModel {
+  // static 
 
   //当前页数量
   int _currentPage = 0;
@@ -31,17 +33,28 @@ abstract class ViewStateList<T> with ChangeNotifier {
   }
 
   initData() async{
-    print('console home initdata');
+    print('console home initdata123456');
+
     await refresh(init: true);
-    // return "end initData";
   }
   
 
   //下拉刷新
   Future refresh({init: false}) async{
-    var data = await loadData(isFirst:true);
-    list.addAll(data);
-    notifyListeners();
+    setBusy();
+    try {
+       var data = await loadData(isFirst:true);
+       print(data);
+      list.clear();
+      list.addAll(data);
+      setIdle();
+    } catch(e, s) {
+      if(init)list.clear();
+      setError(e, s);
+    }
+      notifyListeners();
+   
+    // notifyListeners();
   }
 
 //isFirst  判断是不是第一次加载
@@ -52,8 +65,7 @@ Future loadMore() async{
   _currentPage++;
   List<T> data = await loadData();
   list.addAll(data);
-         notifyListeners();
-
+  notifyListeners();
 }
 
 }
