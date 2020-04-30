@@ -78,7 +78,7 @@ class _TabNavigatorState extends State<TabNavigator> {
           setState(() {
             print(index);
             _selectedIndex = index;
-            _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.easeInCirc);
+            _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
           });
         },
       ),

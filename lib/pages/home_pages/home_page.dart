@@ -34,8 +34,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     super.initState();
     _linkNotifier = LinkHeaderNotifier();
     _secondFloorOpen = ValueNotifier<bool>(false);
-              print('parent init');
-
   }
 
    @override
@@ -49,80 +47,81 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-          print('parent build');
     return ProviderWidget2(
       model1: HomeProvider(),
       model2: ToTopScroll(),
       builder: (_, homeProvider, topProvider, child) {
-        print('123456789');
+        print("homeProvider >> ${homeProvider.list}");
        return Scaffold(
-            body: 
-              Column(
-              children: <Widget>[
-                SecondFloorWidget(_linkNotifier, _secondFloorOpen),
-                Expanded(
-                  child: EasyRefresh.custom(
-                    scrollController: topProvider.controller,
-                    taskIndependence : true,
-                    // enableControlFinishLoad: 
-                    header: LinkHeader(
-                      _linkNotifier,
-                      extent: 70.0,
-                      triggerDistance: 70.0,
-                      completeDuration: Duration(milliseconds: 500),
-                    ),
-                    onRefresh: () async {
-                      if (_secondFloorOpen.value) return;
-                      homeProvider.initData();
-                    },
-                    onLoad:homeProvider.loadMore,
-                    slivers: <Widget>[
-                      SliverAppBar(
-                        expandedHeight: 180.0,
-                        pinned: true,
-                        // backgroundColor: Colors.red,
-                        flexibleSpace: FlexibleSpaceBar(
-                          centerTitle: true,
-                          title: EmptyAnimatedSwitcher(
-                            display: topProvider.showAppBar,
-                            child: Text("客官，楼上请"),
-                          ),
-                          background: BannerWidget(),
-                        ),
+            body: Builder(builder: (_) {
+              return  Column(
+                  children: <Widget>[
+                  SecondFloorWidget(_linkNotifier, _secondFloorOpen),
+                  Expanded(
+                    child: EasyRefresh.custom(
+                      scrollController: topProvider.controller,
+                      taskIndependence : true,
+                      // enableControlFinishLoad: 
+                      header: LinkHeader(
+                        _linkNotifier,
+                        extent: 70.0,
+                        triggerDistance: 70.0,
+                        completeDuration: Duration(milliseconds: 500),
                       ),
-                        homeProvider.topArticle.isEmpty? SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              return SkeletonList();
-                            },
-                            childCount: 1,
-                          ),
-                        ):SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              return ArticleItem(
-                                top: true,
-                                item: homeProvider.topArticle[index]
-                              );
-                            },
-                            childCount: homeProvider.topArticle.length,
-                          ),
-                        ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              return ArticleItem(
-                                item: homeProvider.list[index]
-                              );
-                            },
-                            childCount: homeProvider.list?.length ?? 0,
+                      onRefresh: () async {
+                        if (_secondFloorOpen.value) return;
+                        homeProvider.initData();
+                      },
+                      onLoad:homeProvider.loadMore,
+                      slivers: <Widget>[
+                        SliverAppBar(
+                          expandedHeight: 180.0,
+                          pinned: true,
+                          // backgroundColor: Colors.red,
+                          flexibleSpace: FlexibleSpaceBar(
+                            centerTitle: true,
+                            title: EmptyAnimatedSwitcher(
+                              display: topProvider.showAppBar,
+                              child: Text("客官，楼上请"),
+                            ),
+                            background: BannerWidget(),
                           ),
                         ),
-                    ],
+                          homeProvider.topArticle.isEmpty? SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return SkeletonList();
+                              },
+                              childCount: 1,
+                            ),
+                          ):SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return ArticleItem(
+                                  top: true,
+                                  item: homeProvider.topArticle[index]
+                                );
+                              },
+                              childCount: homeProvider.topArticle.length,
+                            ),
+                          ),
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return ArticleItem(
+                                  item: homeProvider.list[index]
+                                );
+                              },
+                              childCount: homeProvider.list?.length ?? 0,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            )
+                ],
+              );
+            })
+             
       );
       },
       onModelReady: (model1, model2) {

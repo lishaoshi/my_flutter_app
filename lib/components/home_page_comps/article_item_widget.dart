@@ -100,7 +100,7 @@ class ArticleItem extends StatelessWidget {
               ),
               Row(
                 children: <Widget>[
-                  if( top )ArticleTag("置顶"),
+                  top?ArticleTag("置顶"):SizedBox.shrink(),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 5),
                     child: Text(

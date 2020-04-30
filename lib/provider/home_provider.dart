@@ -36,7 +36,7 @@ class HomeProvider extends ViewStateList {
       }
       futrueList.add(HomeApi.fetchArticles(page));
       var data = await Future.wait(futrueList);
-      debugPrint('data >>> $data');
+      print("this is data >>>$data");
       if(isFirst) {
          _banners = (data[0]);
         _topArticle = data[1];

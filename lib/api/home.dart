@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter_provider/dio/dio_config.dart';
 import 'package:flutter_provider/model/homeModel/banner.dart';
 import 'package:flutter_provider/model/homeModel/article.dart';
+import 'package:flutter_provider/model/homeModel/product_model.dart';
 
 
 
@@ -29,5 +30,11 @@ class HomeApi {
     return response.data['datas']
         .map<Article>((item) => Article.fromMap(item))
         .toList();
+  }
+  ///体系分类
+    // 体系分类
+  static Future fetchProjectCategories() async {
+    var response = await http.get('project/tree/json');
+    return response.data.map<Tree>((item) => Tree.fromJsonMap(item)).toList();
   }
 }
