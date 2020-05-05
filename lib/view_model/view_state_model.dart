@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:dio/dio.dart';
@@ -53,6 +55,8 @@ class ViewStateModel with ChangeNotifier {
         message = e.error;
       }
     } else {
+      print(e);
+      debugger();
       e = e.error;
       if(e is UnAuthorizedException) {
         s = null;

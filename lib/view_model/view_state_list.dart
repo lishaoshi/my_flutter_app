@@ -33,8 +33,6 @@ abstract class ViewStateList<T> extends ViewStateModel {
   }
 
   initData() async{
-    print('console home initdata123456');
-
     await refresh(init: true);
   }
   
@@ -44,15 +42,15 @@ abstract class ViewStateList<T> extends ViewStateModel {
     setBusy();
     try {
        var data = await loadData(isFirst:true);
-       print(data);
       list.clear();
       list.addAll(data);
       setIdle();
+      print('请求完成');
     } catch(e, s) {
       if(init)list.clear();
       setError(e, s);
     }
-      notifyListeners();
+    notifyListeners();
    
     // notifyListeners();
   }
