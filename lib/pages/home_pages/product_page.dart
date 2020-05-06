@@ -6,6 +6,7 @@ import 'package:flutter_provider/view_model/product_model.dart';
 import 'package:flutter_provider/widget/provider_widget/multil_provider.dart';
 import 'package:flutter_provider/model/homeModel/product_model.dart';
 import 'package:flutter_provider/widget/view_state_widget.dart';
+import 'package:provider/provider.dart';
 
 
 class ProductPage extends StatefulWidget {
@@ -16,36 +17,26 @@ class ProductPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<ProductPage> with SingleTickerProviderStateMixin{
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => null;
-  var _tab = [
-    Tab(text:"类型1"),
-   Tab(text:"类型二"),
-    Tab(text:"类型三"),
-    Tab(text:"tasfdsdfsdfb3"),
-    Tab(text:"tab5sdfsdfd")
-  ];
-  TabController _tabController;
-  String dropdownValue ="One";
+
+  ValueNotifier<int> _muneIndex;
+  TabController tabController;
 
   
 
 
   @override
   void initState() {
-    _tabController = TabController(
-      initialIndex: 0,
-      vsync: this,
-      length: 5
-    );
-    
+    _muneIndex = ValueNotifier(0);
     // TODO: implement initState
     super.initState();
   }
+   @override
+  void dispose() {
+    _muneIndex.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-    print(12);
     return  ProviderWidget(
               model: ProductTopCare(),
               onModelReady:(model) {
@@ -55,37 +46,54 @@ class _MyPageState extends State<ProductPage> with SingleTickerProviderStateMixi
                 if(model.isBusy) {
                   return ViewStateBusyWidget();
                 }
-                List<Tree> treeList = model.list;
-                return Builder(
-                  builder: (_)=>Scaffold(
-                    appBar: AppBar(
-                      title: Stack(
-                        children: <Widget>[
-                          DeomDownButtomWidget(topTypeList:model.list),
-                          Container(
-                            margin: const EdgeInsets.only(right: 25),
-                            child: TabBar(
-                              tabs:List.generate(treeList.length, (index)=>Tab( text: treeList[index].name,)),
-                              controller: _tabController,
-                              isScrollable: true,
-                            
-                            )
-                          ),
-                        
-                          
-                        ],
-                      ),
-                    ),
-                  
-                    body: Center(
-                      child: Text('my ProductPage page!'),
-                    ),
-                  ),
-                );
+                return ValueListenableProvider<int>.value(
+                    value: _muneIndex,
+                    child: DefaultTabController(
+                            length: model.list.length,
+                            initialIndex: _muneIndex.value,
+                            child:
+                              Builder(
+                                builder: (context) {
+                                  if(tabController == null) {
+                                    tabController = DefaultTabController.of(context);
+                                    tabController.addListener(() {
+                                      print(tabController.index);
+                                      _muneIndex.value = tabController.index;
+                                    });
+                                  }
+                                return Scaffold(
+                                    appBar: AppBar(
+                                      title: Stack(
+                                        children: <Widget>[
+                                          DeomDownButtomWidget(topTypeList:model.list),
+                                          Container(
+                                            margin: const EdgeInsets.only(right: 25),
+                                            color: Theme.of(context).primaryColor.withAlpha(100),
+                                            child: TabBar(
+                                                  tabs:List.generate(model.list.length, (index)=>Tab( text: model.list[index].name,)),
+                                                  isScrollable: true,
+                                                )
+                                            )
+                                        ],
+                                      ),
+                                    ),
+                                  
+                                    body: TabBarView(
+                                      children: List.generate(model.list.length,
+                                        (index) => Center(
+                                          child: Text("${model.list[index].id}")
+                                        ),
+                                    ),
+                                )
+
+                              );
+                                })
                  
-              },
-            );
-  }
+                )
+                ); 
+              }
+    );
+}
 }
 
 
@@ -93,50 +101,42 @@ class _MyPageState extends State<ProductPage> with SingleTickerProviderStateMixi
 class DeomDownButtomWidget extends StatelessWidget {
   // DeomDownButtomWidget():super();
   final List topTypeList;
-    DeomDownButtomWidget({Key key, @required this.topTypeList}) : super(key: key);
+  DeomDownButtomWidget({Key key, @required this.topTypeList}) : super(key: key);
 
   Widget _dropDownButtom (BuildContext context, { List typeList }) {
+    int currentIndex = Provider.of<int>(context);
+    var theme = Theme.of(context);
+    var subhead = theme.primaryTextTheme.subhead;
     return Align(
-             alignment: Alignment(0, 0),
              child:  Theme(
               data: Theme.of(context).copyWith(
                 canvasColor: Theme.of(context).primaryColor,
               ), 
-              child:DropdownButtonHideUnderline(
-                child: DropdownButton(
-                  // value: dropdownValue,
-                  elevation: 0,
-                  focusColor: Colors.blue,
-                  style: Theme.of(context).primaryTextTheme.subtitle,
-                  items: <DropdownMenuItem>[
-                    DropdownMenuItem(
-                      value: "One",
-                      child: Text("类型一"),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    elevation: 0,
+                    value: currentIndex,
+                    style: subhead,
+                    items: List.generate(topTypeList.length,(index)=>DropdownMenuItem(value: index,child: Text("${topTypeList[index].name}",style: currentIndex == index
+                        ? subhead.apply(
+                            fontSizeFactor: 1.15,
+                            color: theme.brightness == Brightness.light
+                                ? Colors.white
+                                : theme.accentColor)
+                        : subhead.apply(color: subhead.color.withAlpha(200),)))),
+                    icon: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.white,
                     ),
-                    DropdownMenuItem(
-                      value: "2",
-                      child: Text("类型二",),
-                    ),
-                    DropdownMenuItem(
-                      value: "3",
-                      child: Text("类型三"),
-                    ),
-                    DropdownMenuItem(
-                      value: "4",
-                      child: Text("类型四"),
-                    ),
-                  ],
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Colors.white,
+                    onChanged:(value) {
+                      // print(index);
+                      DefaultTabController.of(context).animateTo(value);
+                    },
+                    isExpanded: true,
                   ),
-                  onChanged:(index) {
-                    print(index);
-                  },
-                  isExpanded: true
                 ),
               ),
-            ),
+             alignment: Alignment(1.1, -1),
            );
   } 
 
